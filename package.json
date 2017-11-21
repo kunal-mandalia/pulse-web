@@ -7,9 +7,13 @@
   "author": "Kunal Mandalia <kunal.v.mandalia@gmail.com> (http://kunalmandalia.com/)",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "jest"
   },
   "dependencies": {
     "socket.io": "2.0.4"
+  },
+  "devDependencies": {
+    "jest": "^21.2.1"
   }
 }
