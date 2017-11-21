@@ -1,8 +1,13 @@
 <html>
   <head>
+    <title>Pulse Web</title>
     <style>
       * {
         font-family: 'Arsenal', sans-serif;
+      }
+      h1, h2 {
+        text-align: center;
+        margin: 60px 0 20px;
       }
       a {
         cursor: pointer;
@@ -17,13 +22,21 @@
         font-size: 60%;
       }
       .subtitle {
-        text-align: center;          
+        text-align: center;
       }
       .links {
         text-align: center;
       }
+      .link {
+        margin: 15px;
+      }
+      .page-wrapper {
+        display: flex;
+        justify-content: center;
+      }
       .page {
-        text-align: center;
+        max-width: 600px;
+        padding: 40px 15px;
       }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Arsenal" rel="stylesheet">        
@@ -31,28 +44,38 @@
   <body>
     <h1 id='title' class='title'>Pulse <span class='title-small'><span id='pathname' /></span></h1>
     <div class='links'>
-      <a onClick='onPathChange({type: "page", value: "/"}, "page-home")'>Home</a>
-      <a onClick='onPathChange({type: "page", value: "/solutions"}, "page-solutions")'>Solutions</a>
-      <a onClick='onPathChange({type: "page", value: "/about"}, "page-about")'>About</a>
+      <a class='link' onClick='onPathChange({type: "page", value: "/"}, "page-home")'>Home</a>
+      <a class='link' onClick='onPathChange({type: "page", value: "/how-it-works"}, "page-howitworks")'>How It Works</a>
+      <a class='link' onClick='onPathChange({type: "page", value: "/about"}, "page-about")'>About</a>
+      <a class='link' href='./debugger' target='_blank'>Debugger</a>
     </div>
-    <div class='page'>
-      <div id='page-home' style='display: block'>
-        homepage
-      </div>
-      <div id='page-solutions' style='display: none'>
-        solutions
-      </div>
-      <div id='page-about' style='display: none'>
-        about
+    <div class='page-wrapper'>
+      <div class='page'>
+        <div id='page-home' style='display: block'>
+          <h2>TL;DR</h2>
+          <p>
+            Send events to the <a href='./debugger' target='_blank'>debugger</a> by clicking around this site (navbar, buttons, etc.). Events will appear in realtime in the debugger.
+          </p>
+          <p>Here's an <button onClick='emitEvent({type: "event", value: "Home Button"})'>example</button> of a button event.</p>
+        </div>
+        <div id='page-howitworks' style='display: none'>
+          <h2>Realtime</h2>
+          <p>Events are sent to and received over websockets. Checkout this page's javascript source or <a href='https://socket.io/' target='_blank'>socket.io</a> to learn more.</p>
+          <p>Think realtime is cool? <button onClick='emitEvent({type: "event", value: "HIW Button Realtime"})'>Sure!</button></p>
+        </div>
+        <div id='page-about' style='display: none'>
+          <h2>Why Pulse?</h2>
+          <p>I was impressed by segment.io's realtime event debugger. It displays events, like page views, button clicks, etc., in realtime. I wanted to build something similar to understand how something like that works. - <a href='http://www.kunalmandalia.com' target='_blank'>Kunal Mandalia</a></p>
+
+          <h2>Github</h2>
+          <p>Checkout the open source repo on <a href='https://github.com/kunal-mandalia/pulse-web' target='_blank'>github</a>. Keep an eye out for pulse-server if you want to know how the backend works.</p>
+        </div>
       </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io('https://pulse-server-km.herokuapp.com')
-      // const socket = io('http://localhost:8080');
-      const pageHome = document.getElementById('page-home')
-      const pageSolutions = document.getElementById('page-solutions')
-      const pageAbout = document.getElementById('page-about')
+      // const socket = io('http://localhost:8080'); // or run locally
 
       const { pathname } = location
       socket.emit('event', {type: 'page', value: '/'})
@@ -63,13 +86,17 @@
 
       function onPathChange (data, activePage) {
         updatePath(data.value)
-        const pages = ['page-home', 'page-solutions', 'page-about']
+        const pages = ['page-home', 'page-howitworks', 'page-about']
         pages.forEach(page => {
           page === activePage
             ? document.getElementById(page).style.display = 'block'
             : document.getElementById(page).style.display = 'none'
         })
         console.log('path', data, activePage)
+        socket.emit('event', data)
+      }
+
+      function emitEvent (data) {
         socket.emit('event', data)
       }
 
