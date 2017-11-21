@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <style>
+      * {
+        font-family: 'Arsenal', sans-serif;
+      }
+      a {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+      .title {
+        text-align: center;
+        margin: 60px 0 20px;
+      }
+      .title-small {
+        color: #c4c4c4;
+        font-size: 60%;
+      }
+      .subtitle {
+        text-align: center;          
+      }
+      .links {
+        text-align: center;
+      }
+      .page {
+        text-align: center;
+      }
+    </style>
+    <link href="https://fonts.googleapis.com/css?family=Arsenal" rel="stylesheet">        
+  </head>
+  <body>
+    <h1 id='title' class='title'>Pulse <span class='title-small'><span id='pathname' /></span></h1>
+    <div class='links'>
+      <a onClick='onPathChange({type: "page", value: "/"}, "page-home")'>Home</a>
+      <a onClick='onPathChange({type: "page", value: "/solutions"}, "page-solutions")'>Solutions</a>
+      <a onClick='onPathChange({type: "page", value: "/about"}, "page-about")'>About</a>
+    </div>
+    <div class='page'>
+      <div id='page-home' style='display: block'>
+        homepage
+      </div>
+      <div id='page-solutions' style='display: none'>
+        solutions
+      </div>
+      <div id='page-about' style='display: none'>
+        about
+      </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io('https://pulse-server-km.herokuapp.com')
+      // const socket = io('http://localhost:8080');
+      const pageHome = document.getElementById('page-home')
+      const pageSolutions = document.getElementById('page-solutions')
+      const pageAbout = document.getElementById('page-about')
+
+      const { pathname } = location
+      socket.emit('event', {type: 'page', value: '/'})
+
+      socket.on('event', function (pathname) {
+        console.log('client debug ', pathname)
+      })
+
+      function onPathChange (data, activePage) {
+        updatePath(data.value)
+        const pages = ['page-home', 'page-solutions', 'page-about']
+        pages.forEach(page => {
+          page === activePage
+            ? document.getElementById(page).style.display = 'block'
+            : document.getElementById(page).style.display = 'none'
+        })
+        console.log('path', data, activePage)
+        socket.emit('event', data)
+      }
+
+      function updatePath (pathname) {
+        document.getElementById('pathname').innerHTML = pathname
+      }
+    </script>
+  </body>
+</html>

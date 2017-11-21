@@ -1,0 +1,15 @@
+{
+  "name": "pulse-web",
+  "version": "1.0.0",
+  "description": "Realtime analytics with socket.io",
+  "main": "index.js",
+  "repository": "https://github.com/kunal-mandalia/pulse-web.git",
+  "author": "Kunal Mandalia <kunal.v.mandalia@gmail.com> (http://kunalmandalia.com/)",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "socket.io": "2.0.4"
+  }
+}
