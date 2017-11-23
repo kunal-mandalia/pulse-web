@@ -35,5 +35,5 @@ const pulseWebWrapper = (document, window, io) => {
   }
 }
 
-if (window) window.START_PULSE_WEB = pulseWebWrapper
+if (window) window.PULSE_WEB_WRAPPER = pulseWebWrapper
 if (typeof module !== 'undefined') module.exports = pulseWebWrapper
