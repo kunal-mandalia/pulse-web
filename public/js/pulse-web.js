@@ -1,6 +1,13 @@
 const pulseWebWrapper = (document, window, io) => {
   let pulseWeb = window.PULSE_WEB || {}
+  const socket = io('https://pulse-server-km.herokuapp.com')
+  const { pathname } = window.location
 
+  socket.emit('event', {type: 'page', value: '/'})
+  socket.on('event', function (pathname) {
+    console.log('client debug ', pathname)
+  })
+  
   function onPathChange (data, activePage) {
     updatePath(data.value)
     const pages = ['page-home', 'page-howitworks', 'page-about']
@@ -20,14 +27,6 @@ const pulseWebWrapper = (document, window, io) => {
   function updatePath (pathname) {
     document.getElementById('pathname').innerHTML = pathname
   }
-
-  const socket = io('https://pulse-server-km.herokuapp.com')
-  const { pathname } = window.location
-
-  socket.emit('event', {type: 'page', value: '/'})
-  socket.on('event', function (pathname) {
-    console.log('client debug ', pathname)
-  })
 
   window.PULSE_WEB = {
     onPathChange,
